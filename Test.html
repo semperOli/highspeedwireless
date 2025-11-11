@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Rating Scale</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .rating-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .rating-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+
+    .rating-buttons button {
+      width: 40px;
+      height: 40px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .rating-buttons button:hover {
+      background: #f0f0f0;
+    }
+
+    .rating-buttons button.selected {
+      background-color: #007bff;
+      color: white;
+      border-color: #007bff;
+    }
+
+    .label-left {
+      font-size: 0.9em;
+      color: #8b0000;
+      font-style: italic;
+    }
+
+    .label-right {
+      font-size: 0.9em;
+      color: #006400;
+      font-style: italic;
+    }
+
+    #result {
+      margin-top: 25px;
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h3>How would you rate our service? (0–10)</h3>
+
+  <div class="rating-wrapper">
+    <span class="label-left">Not Satisfied</span>
+    <div class="rating-buttons">
+      <!-- Buttons generated dynamically -->
+    </div>
+    <span class="label-right">Very Satisfied</span>
+  </div>
+
+  <div id="result">You selected: <span id="selected-value">None</span></div>
+
+  <script>
+    const ratingContainer = document.querySelector('.rating-buttons');
+    const resultSpan = document.getElementById('selected-value');
+
+    // Create buttons 0–10
+    for (let i = 0; i <= 10; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.rating-buttons button')
+          .forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        resultSpan.textContent = i;
+      });
+      ratingContainer.appendChild(btn);
+    }
+  </script>
+</body>
+</html>
