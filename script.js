@@ -1,13 +1,106 @@
 /**
  * HIGHSPEED WISP - MAIN JAVASCRIPT
  * ========================================
- * Handles mobile navigation and smooth scrolling
+ * Handles luxury header, mobile navigation, and smooth scrolling
  */
 
 // ============================================
-// MOBILE MENU TOGGLE
+// LUXURY HEADER SCROLL BEHAVIOR
+// ============================================
+const initLuxuryHeader = () => {
+    const header = document.querySelector('.luxury-header');
+    
+    if (header) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    }
+};
+
+// ============================================
+// MOBILE MENU TOGGLE - LUXURY VERSION
 // ============================================
 const initMobileMenu = () => {
+    const mobileMenuBtn = document.querySelector('.mobile-menu-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (mobileMenuBtn && navMenu) {
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active');
+            
+            // Prevent body scroll when menu is open
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        });
+        
+        // Close menu when clicking on a link
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                navMenu.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+};
+
+// ============================================
+// ACTIVE NAVIGATION LINK HIGHLIGHTING
+// ============================================
+const initActiveNavLinks = () => {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link, nav ul li a');
+    
+    // Click-based active state
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        });
+    });
+    
+    // Scroll-based active state
+    const highlightNav = () => {
+        const scrollPosition = window.pageYOffset + 100;
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute('id');
+            
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${sectionId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    };
+    
+    window.addEventListener('scroll', highlightNav);
+    highlightNav(); // Initial check
+};
+
+// ============================================
+// LEGACY MOBILE MENU TOGGLE (Fallback)
+// ============================================
+const initLegacyMobileMenu = () => {
     const mobileMenuBtn = document.querySelector('.mobile-menu');
     const navMenu = document.querySelector('nav ul');
     
@@ -145,40 +238,12 @@ const initScrollAnimations = () => {
 };
 
 // ============================================
-// ACTIVE NAV LINK HIGHLIGHTING
-// ============================================
-const initActiveNavLinks = () => {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('nav ul li a');
-    
-    const highlightNav = () => {
-        const scrollPosition = window.pageYOffset + 100;
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
-            const sectionId = section.getAttribute('id');
-            
-            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${sectionId}`) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-        });
-    };
-    
-    window.addEventListener('scroll', highlightNav);
-    highlightNav(); // Call once on load
-};
-
-// ============================================
 // INITIALIZE ALL FUNCTIONS ON DOM LOAD
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
+    initLuxuryHeader();
     initMobileMenu();
+    initLegacyMobileMenu();
     initSmoothScroll();
     initHeaderScrollEffect();
     initFormValidation();
@@ -187,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initFAQAccordion();
     initStatsCounter();
     
-    console.log('HighSpeed WISP website initialized successfully!');
+    console.log('HighSpeed WISP luxury website initialized successfully!');
 });
 
 // ============================================
@@ -195,7 +260,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // ============================================
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
+        initLuxuryHeader,
         initMobileMenu,
+        initLegacyMobileMenu,
         initSmoothScroll,
         initHeaderScrollEffect,
         initFormValidation,
